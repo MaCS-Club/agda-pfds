@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Игорь Федоров">
+  <meta name="dcterms.date" content="2023-01-01">
+  <title>Agda Списки</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/black.css" id="theme">
+  <style>
+  .slides {
+      font-size: 0.75em;
+  }
+  .reveal ul {
+      display: block;
+  }
+  .reveal ol {
+      display: block;
+  }
+
+  img {
+      max-height: 350px !important;
+  }
+
+  figcaption {
+      font-size: 0.6em !important;
+      font-style: italic !important;
+  }
+
+  .subtitle {
+      font-style: italic !important;
+  }
+
+  .date {
+      font-size: 0.75em !important;
+  }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Agda Списки</h1>
+  <p class="author">Игорь Федоров</p>
+  <p class="date">2023</p>
+</section>
+
+<section>
+<section id="списки" class="title-slide slide level1">
+<h1>Списки</h1>
+<p>Определение модуля</p>
+<pre><code>module List where</code></pre>
+<p>Импорт модулей необходимых для ведения доказательства</p>
+<pre><code>import Relation.Binary.PropositionalEquality as Eq
+open Eq 
+open Eq.≡-Reasoning </code></pre>
+<p>Импорт натуральных чисел</p>
+<pre><code>open import Data.Nat</code></pre>
+</section>
+<section id="определение-списка" class="slide level2">
+<h2>Определение списка</h2>
+<ul>
+<li>→ - <code>\to</code></li>
+</ul>
+<pre><code>infixr 4 _::_
+
+data List(A : Set) : Set where
+  [] : List A
+  _::_ : A → List A → List A</code></pre>
+<p>Определение длины списка</p>
+<pre><code>length : {A : Set} → List A → ℕ 
+length [] = 0
+length (x :: xs) = suc (length xs) </code></pre>
+<p>Определение добавления в конец списка</p>
+<pre><code>append : {A : Set} → List A → A → List A 
+append [] a = a :: []
+append (x :: xs) a = x :: (append xs a)</code></pre>
+<p>Лемма доказывающая, что добавление элемента в конец увеличивает
+длинну списка на единицу</p>
+<p>TODO: расписать какого хуя так получилось</p>
+<ul>
+<li>∎ - ‵`</li>
+<li>≡ - <code>\==</code></li>
+<li>⟨ - <code>\&lt;</code></li>
+<li>⟩ - <code>\&gt;</code></li>
+</ul>
+<pre><code>append-length-lemma : {A : Set} → (l : List A) → (a : A) → length (append l a) ≡ suc (length l)
+append-length-lemma [] _ = refl 
+append-length-lemma (x :: xs) a = 
+  length (append (x :: xs) a) ≡⟨⟩ 
+  length (x :: (append xs a)) ≡⟨⟩ 
+  suc (length (append xs a)) ≡⟨ cong suc (append-length-lemma xs a) ⟩ 
+  suc (suc (length xs)) ∎ </code></pre>
+<p>Определение конкатенации</p>
+<pre><code>_++_ : {A : Set} → List A → List A → List A 
+[] ++ ys = ys 
+(x :: xs) ++ ys = x :: (xs ++ ys)</code></pre>
+<p>Ассоциативность конкатенации</p>
+<pre><code>++-assoc : {A : Set} → (a b c : List A) → (a ++ b) ++ c ≡ a ++ (b ++ c)
+++-assoc [] b c = refl
+++-assoc (x :: a) b c = 
+    ((x :: a) ++ b) ++ c ≡⟨⟩ 
+    (x :: (a ++ b)) ++ c ≡⟨⟩ 
+    x :: ((a ++ b) ++ c) ≡⟨ cong (λ y → (x :: y)) (++-assoc a b c ) ⟩ 
+    x :: (a ++ (b ++ c)) ∎</code></pre>
+<p>Определение foldLeft</p>
+<pre><code>foldLeft : {A B : Set} → List A → B → (B → A → B) → B
+foldLeft [] b _ = b
+foldLeft (x :: xs) b f = foldLeft xs (f b x) f</code></pre>
+</section>
+<section id="определения-reverse" class="slide level2">
+<h2>Определения reverse</h2>
+<h3 id="первое-определение-через-append">Первое определение (через
+append)</h3>
+<pre><code>reverse-by-append :  {A : Set} -&gt; List A -&gt; List A
+reverse-by-append [] = []
+reverse-by-append (x :: v) = append (reverse-by-append v) x</code></pre>
+<h3 id="второе-определение-через-concat">Второе определение (через
+concat)</h3>
+<pre><code>reverse-by-concat : {A : Set} → List A → List A 
+reverse-by-concat [] = []
+reverse-by-concat (x :: xs) = (reverse-by-concat xs) ++ (x :: [])</code></pre>
+<h3 id="третье-определение-через-аккумулятор-за-on">Третье определение
+(через аккумулятор за O(n))</h3>
+<pre><code>reverse-by-acc : {A : Set} → List A → List A → List A 
+reverse-by-acc acc [] = acc 
+reverse-by-acc acc (x :: xs) = reverse-by-acc (x :: acc) xs
+
+reverse : {A : Set} → List A → List A 
+reverse = reverse-by-acc []</code></pre>
+<h3 id="четвертое-определение-через-foldleft">Четвертое определение
+(через foldLeft)</h3>
+<pre><code>reverse-by-fl : {A : Set} → List A → List A 
+reverse-by-fl l = foldLeft l [] (λ b a → a :: b)</code></pre>
+<pre><code>reverse-by-acc-equals-foldLeft : {A : Set} → (acc : List A) → (a : List A) → reverse-by-acc acc a ≡ foldLeft a acc (λ b a → a :: b)
+reverse-by-acc-equals-foldLeft _ [] = refl
+reverse-by-acc-equals-foldLeft acc (y :: ys) = 
+    reverse-by-acc  acc (y :: ys) ≡⟨⟩ 
+    reverse-by-acc  (y :: acc) ys ≡⟨ reverse-by-acc-equals-foldLeft (y :: acc) ys ⟩ 
+    foldLeft ys (y :: acc) (λ b a → a :: b) ∎</code></pre>
+<pre><code>reverse-by-acc-append-lemma : {A : Set} → (acc : List A) → (l : List A) → (a : A) → reverse-by-acc acc (a :: l) ≡ reverse-by-acc [] l ++ (a :: acc)
+reverse-by-acc-append-lemma _ [] _ = refl
+reverse-by-acc-append-lemma acc (x :: []) a = refl
+reverse-by-acc-append-lemma acc (x₁ :: x₂ :: xs) a =
+    reverse-by-acc acc (a :: x₁ :: x₂ :: xs) ≡⟨⟩ 
+    reverse-by-acc (a :: acc) (x₁ :: x₂ :: xs) ≡⟨⟩
+    reverse-by-acc (x₁ :: a :: acc) (x₂ :: xs) ≡⟨⟩
+    reverse-by-acc (x₁ :: a :: acc) (x₂ :: xs) ≡⟨ reverse-by-acc-append-lemma (x₁ :: a :: acc) xs x₂ ⟩ 
+    reverse-by-acc [] xs ++ (x₂ :: x₁ :: a :: acc) ≡⟨⟩
+    reverse-by-acc [] xs ++ ((x₂ :: x₁ :: []) ++ (a :: acc)) ≡⟨ sym (++-assoc (reverse-by-acc [] xs) (x₂ :: x₁ :: []) (a :: acc))⟩ 
+    (reverse-by-acc [] xs ++ (x₂ :: x₁ :: [])) ++ (a :: acc) ≡⟨ cong (λ x → x ++ (a :: acc)) (sym(reverse-by-acc-append-lemma (x₁ :: []) xs x₂ )) ⟩
+    (reverse-by-acc (x₁ :: []) (x₂ :: xs)) ++ (a :: acc) ≡⟨⟩
+    (reverse-by-acc [] (x₁ :: x₂ :: xs)) ++ (a :: acc) ∎ </code></pre>
+<pre><code>length-concat-sum : {A : Set} → (a b : List A) → length (a ++ b) ≡ length a + length b 
+length-concat-sum [] b = refl 
+length-concat-sum (x :: xs) b = 
+    length (x :: xs ++ b) ≡⟨⟩ 
+    length (x :: (xs ++ b)) ≡⟨⟩
+    suc (length (xs ++ b)) ≡⟨ cong suc (length-concat-sum xs b) ⟩
+    suc (length xs + length b) ∎ </code></pre>
+<pre><code>+-suc : ∀ m n → (suc m + n) ≡ (m + suc n)
++-suc zero m = refl
++-suc (suc n) m = cong suc (+-suc n m)
+
++-rightUnit : (n : ℕ) → (n + zero) ≡ n
++-rightUnit zero = refl
++-rightUnit (suc n) = cong suc (+-rightUnit n)
+
++-comm : ∀ a b → a + b ≡ b + a
++-comm zero b = sym(+-rightUnit b)
++-comm (suc a) b = trans (cong suc (+-comm a b)) (+-suc b a)</code></pre>
+<pre><code>reverse-length-lemma : {A : Set} → (a : List A) → length (reverse a) ≡ length a
+reverse-length-lemma [] = refl
+reverse-length-lemma (x :: xs) = 
+  length (reverse (x :: xs)) ≡⟨ cong (length) (reverse-by-acc-append-lemma [] xs x) ⟩
+  length (reverse xs ++ (x :: [])) ≡⟨ length-concat-sum (reverse xs)  (x :: []) ⟩
+  length (reverse xs) + length (x :: []) ≡⟨ cong (λ a → a + length (x :: [])) (reverse-length-lemma xs) ⟩ 
+  length xs + length (x :: []) ≡⟨⟩ 
+  length xs + suc zero ≡⟨ sym (+-suc (length xs) (zero)) ⟩ 
+  suc(length xs) + 0 ≡⟨ +-comm ( suc(length xs)) 0 ⟩ 
+  suc(length xs) ∎</code></pre>
+</section></section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
