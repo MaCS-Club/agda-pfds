@@ -27,9 +27,82 @@
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/black.css" id="theme">
   <style>
+  .reveal,
+  .reveal h1,
+  .reveal h2,
+  .reveal h3,
+  .reveal h4,
+  .reveal h5,
+  .reveal h6 {
+    font-family: "Arial";
+  }
   .slides {
       font-size: 0.75em;
   }
@@ -71,141 +144,456 @@
   <p class="date">2023</p>
 </section>
 
-<section>
-<section id="списки" class="title-slide slide level1">
-<h1>Списки</h1>
-<p>Определение модуля</p>
-<pre><code>module List where</code></pre>
-<p>Импорт модулей необходимых для ведения доказательства</p>
-<pre><code>import Relation.Binary.PropositionalEquality as Eq
-open Eq 
-open Eq.≡-Reasoning </code></pre>
-<p>Импорт натуральных чисел</p>
-<pre><code>open import Data.Nat</code></pre>
+<section id="модуль-list" class="title-slide slide level1">
+<h1>Модуль List</h1>
+<p>Определим модуль и импортируем тип равенства типов ≡ (пишется как ==)
+вместе с удобным синтаксисом для ведения доказательств, а так же
+натуральные числа и их свойства</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> List <span class="kw">where</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- Импорт модулей необходимых для ведения доказательства</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> Relation<span class="ot">.</span>Binary<span class="ot">.</span>PropositionalEquality as Eq</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> Eq </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> Eq<span class="ot">.</span>≡-Reasoning</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- Импорт натуральных чисел и их свойств</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">import</span> Data<span class="ot">.</span>Nat</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">import</span> Data<span class="ot">.</span>Nat<span class="ot">.</span>Properties</span></code></pre></div>
 </section>
-<section id="определение-списка" class="slide level2">
-<h2>Определение списка</h2>
-<ul>
-<li>→ - <code>\to</code></li>
-</ul>
-<pre><code>infixr 4 _::_
 
-data List(A : Set) : Set where
-  [] : List A
-  _::_ : A → List A → List A</code></pre>
-<p>Определение длины списка</p>
-<pre><code>length : {A : Set} → List A → ℕ 
-length [] = 0
-length (x :: xs) = suc (length xs) </code></pre>
-<p>Определение добавления в конец списка</p>
-<pre><code>append : {A : Set} → List A → A → List A 
-append [] a = a :: []
-append (x :: xs) a = x :: (append xs a)</code></pre>
-<p>Лемма доказывающая, что добавление элемента в конец увеличивает
-длинну списка на единицу</p>
-<p>TODO: расписать какого хуя так получилось</p>
+<section id="list" class="title-slide slide level1">
+<h1>List</h1>
+<p>Индуктивно определим тип списка с помощью конструктора пустого списка
+и конструктора добавляющего элемент в начало списка</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">4</span> <span class="ot">_</span>::<span class="ot">_</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> List<span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  [] <span class="ot">:</span> List A</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">_</span>::<span class="ot">_</span> <span class="ot">:</span> A <span class="ot">→</span> List A <span class="ot">→</span> List A <span class="co">-- → пишется как `\to`</span></span></code></pre></div>
+</section>
+
+<section id="длина-списка" class="title-slide slide level1">
+<h1>Длина списка</h1>
+<p>Определим функцию возвращающую длину списка. Длина пустого списка
+равна нулю, а длина непустого списка 1 + длина его хвоста</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>length <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> ℕ</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>length [] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>length <span class="ot">(_</span> :: xs<span class="ot">)</span> <span class="ot">=</span> <span class="dv">1</span> + <span class="ot">(</span>length xs<span class="ot">)</span> </span></code></pre></div>
+</section>
+
+<section id="интерактив" class="title-slide slide level1">
+<h1>Интерактив</h1>
+<p>В компиляторе Agda присутствует интерактивный режим, которым можно
+пользоваться для проверки написанного кода</p>
+<pre class="shell"><code>% agda -I src/List.lagda.md 
+                 _ 
+   ____         | |
+  / __ \        | |
+ | |__| |___  __| | ___
+ |  __  / _ \/ _  |/ __\     Agda Interactive
+ | |  |/ /_\ \/_| / /_| \
+ |_|  |\___  /____\_____/    Type :? for help.
+        __/ /
+        \__/
+
+The interactive mode is no longer under active development. Use at your own risk.
+Main&gt; 1 :: 2 :: []
+1 :: 2 :: []
+Main&gt; length (1 :: 2 :: [])
+2</code></pre>
+</section>
+
+<section>
+<section id="head-и-tail" class="title-slide slide level1">
+<h1>HEAD и TAIL</h1>
+<p>Определим функции head и tail</p>
 <ul>
-<li>∎ - ‵`</li>
+<li>head это функция возвращающая голову списка, т.е. первый элемент
+списка</li>
+<li>tail это функция возвращающая хвост списка, т.е. список без первого
+элемента</li>
+</ul>
+<p>но обе функции определены не для всех списков, а только для не
+пустых</p>
+</section>
+<section id="определение-в-haskell" class="slide level2">
+<h2>Определение в Haskell</h2>
+<p>В Haskell, например, определение выглядит так</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span><span class="ot">                    ::</span> <span class="dt">HasCallStack</span> <span class="ot">=&gt;</span> [a] <span class="ot">-&gt;</span> a</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> (x<span class="op">:</span>_)              <span class="ot">=</span>  x</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> []                 <span class="ot">=</span>  errorEmptyList <span class="st">&quot;head&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span><span class="ot">                    ::</span> <span class="dt">HasCallStack</span> <span class="ot">=&gt;</span> [a] <span class="ot">-&gt;</span> [a]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> (_<span class="op">:</span>xs)             <span class="ot">=</span>  xs</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> []                 <span class="ot">=</span>  errorEmptyList <span class="st">&quot;tail&quot;</span></span></code></pre></div>
+<p>т.е. в случае пустого списка обе функции выкидывают ошибки</p>
+</section>
+<section id="определение-в-haskell-через-maybe" class="slide level2">
+<h2>Определение в Haskell (через Maybe)</h2>
+<p>Есть довольно неплохой вариант вместо ошибки возвращать ответ
+завернутый в тип Maybe, например, в Haskell можно определить эти функции
+так</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">safeHead                    ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Maybe</span> a</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>safeHead (x<span class="op">:</span>_)              <span class="ot">=</span>  <span class="dt">Just</span> x</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>safeHead []                 <span class="ot">=</span>  <span class="dt">Nothing</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ot">safeTail                    ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Maybe</span> [a]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>safeTail (_<span class="op">:</span>xs)             <span class="ot">=</span>  <span class="dt">Just</span> xs</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>safeTail []                 <span class="ot">=</span>  <span class="dt">Nothing</span></span></code></pre></div>
+</section>
+<section id="определение-в-agda" class="slide level2">
+<h2>Определение в Agda</h2>
+<p>В Agda, с помощью зависимых типов, мы просто можем не определять head
+и tail на пустых списках, и их нельзя будет на них вызвать</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>head <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> <span class="ot">{</span>length a &gt; <span class="dv">0</span><span class="ot">}</span> <span class="ot">→</span> A </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>head <span class="ot">(</span>x :: <span class="ot">_)</span> <span class="ot">=</span> x</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>tail <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> <span class="ot">{</span>length a &gt; <span class="dv">0</span><span class="ot">}</span> <span class="ot">→</span> List A </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tail <span class="ot">(_</span> :: xs<span class="ot">)</span> <span class="ot">=</span> xs </span></code></pre></div>
+<pre class="example"><code>ex1 = head (1 :: 2 :: []) 
+
+ex2 = head [] -- не может найти доказательство, что length a &gt; 0 и просит его предъявить, при компиляции будет ошибка
+
+ex3 = tail (1 :: 2 :: []) 
+
+ex4 = tail [] -- не может найти доказательство, что length a &gt; 0 и просит его предъявить, при компиляции будет ошибка</code></pre>
+</section>
+<section id="ошибка-компиляции" class="slide level2">
+<h2>Ошибка компиляции</h2>
+<p>Не смотря на то, что непосредственно в редакторе отображается не
+ошибка, а подсказка, что нужно предоставить доказетельство не нулевой
+длины, во время компиляции действительно будет ошибка</p>
+<pre class="shell"><code>% agda src/List.lagda.md   
+Checking List (/Users/igorfedorov/Github/agda-pfds/src/List.lagda.md).
+Unsolved metas at the following locations:
+  /Users/igorfedorov/Github/agda-pfds/src/List.lagda.md:96,7-11
+  /Users/igorfedorov/Github/agda-pfds/src/List.lagda.md:103,7-11</code></pre>
+</section></section>
+<section>
+<section id="цепочка-преобразований" class="title-slide slide level1">
+<h1>Цепочка преобразований</h1>
+<p>Для удобства ведения доказательств можно использовать операторы</p>
+<ul>
+<li><code>a ≡⟨⟩ b</code> - <code>a</code> и <code>b</code> равны по
+определению</li>
+<li><code>a ≡⟨ l ⟩ b</code> - <code>a</code> и <code>b</code> равны по
+утверждению <code>l</code></li>
+<li><code>∎</code> - конец доказательства</li>
+</ul>
+<p>Написание символов:</p>
+<ul>
+<li>∎ - <code>\qed</code></li>
 <li>≡ - <code>\==</code></li>
 <li>⟨ - <code>\&lt;</code></li>
 <li>⟩ - <code>\&gt;</code></li>
 </ul>
-<pre><code>append-length-lemma : {A : Set} → (l : List A) → (a : A) → length (append l a) ≡ suc (length l)
-append-length-lemma [] _ = refl 
-append-length-lemma (x :: xs) a = 
-  length (append (x :: xs) a) ≡⟨⟩ 
-  length (x :: (append xs a)) ≡⟨⟩ 
-  suc (length (append xs a)) ≡⟨ cong suc (append-length-lemma xs a) ⟩ 
-  suc (suc (length xs)) ∎ </code></pre>
-<p>Определение конкатенации</p>
-<pre><code>_++_ : {A : Set} → List A → List A → List A 
-[] ++ ys = ys 
-(x :: xs) ++ ys = x :: (xs ++ ys)</code></pre>
-<p>Ассоциативность конкатенации</p>
-<pre><code>++-assoc : {A : Set} → (a b c : List A) → (a ++ b) ++ c ≡ a ++ (b ++ c)
-++-assoc [] b c = refl
-++-assoc (x :: a) b c = 
-    ((x :: a) ++ b) ++ c ≡⟨⟩ 
-    (x :: (a ++ b)) ++ c ≡⟨⟩ 
-    x :: ((a ++ b) ++ c) ≡⟨ cong (λ y → (x :: y)) (++-assoc a b c ) ⟩ 
-    x :: (a ++ (b ++ c)) ∎</code></pre>
-<p>Определение foldLeft</p>
-<pre><code>foldLeft : {A B : Set} → List A → B → (B → A → B) → B
-foldLeft [] b _ = b
-foldLeft (x :: xs) b f = foldLeft xs (f b x) f</code></pre>
 </section>
-<section id="определения-reverse" class="slide level2">
-<h2>Определения reverse</h2>
-<h3 id="первое-определение-через-append">Первое определение (через
-append)</h3>
-<pre><code>reverse-by-append :  {A : Set} -&gt; List A -&gt; List A
-reverse-by-append [] = []
-reverse-by-append (x :: v) = append (reverse-by-append v) x</code></pre>
-<h3 id="второе-определение-через-concat">Второе определение (через
-concat)</h3>
-<pre><code>reverse-by-concat : {A : Set} → List A → List A 
-reverse-by-concat [] = []
-reverse-by-concat (x :: xs) = (reverse-by-concat xs) ++ (x :: [])</code></pre>
-<h3 id="третье-определение-через-аккумулятор-за-on">Третье определение
-(через аккумулятор за O(n))</h3>
-<pre><code>reverse-by-acc : {A : Set} → List A → List A → List A 
-reverse-by-acc acc [] = acc 
-reverse-by-acc acc (x :: xs) = reverse-by-acc (x :: acc) xs
-
-reverse : {A : Set} → List A → List A 
-reverse = reverse-by-acc []</code></pre>
-<h3 id="четвертое-определение-через-foldleft">Четвертое определение
-(через foldLeft)</h3>
-<pre><code>reverse-by-fl : {A : Set} → List A → List A 
-reverse-by-fl l = foldLeft l [] (λ b a → a :: b)</code></pre>
-<pre><code>reverse-by-acc-equals-foldLeft : {A : Set} → (acc : List A) → (a : List A) → reverse-by-acc acc a ≡ foldLeft a acc (λ b a → a :: b)
-reverse-by-acc-equals-foldLeft _ [] = refl
-reverse-by-acc-equals-foldLeft acc (y :: ys) = 
-    reverse-by-acc  acc (y :: ys) ≡⟨⟩ 
-    reverse-by-acc  (y :: acc) ys ≡⟨ reverse-by-acc-equals-foldLeft (y :: acc) ys ⟩ 
-    foldLeft ys (y :: acc) (λ b a → a :: b) ∎</code></pre>
-<pre><code>reverse-by-acc-append-lemma : {A : Set} → (acc : List A) → (l : List A) → (a : A) → reverse-by-acc acc (a :: l) ≡ reverse-by-acc [] l ++ (a :: acc)
-reverse-by-acc-append-lemma _ [] _ = refl
-reverse-by-acc-append-lemma acc (x :: []) a = refl
-reverse-by-acc-append-lemma acc (x₁ :: x₂ :: xs) a =
-    reverse-by-acc acc (a :: x₁ :: x₂ :: xs) ≡⟨⟩ 
-    reverse-by-acc (a :: acc) (x₁ :: x₂ :: xs) ≡⟨⟩
-    reverse-by-acc (x₁ :: a :: acc) (x₂ :: xs) ≡⟨⟩
-    reverse-by-acc (x₁ :: a :: acc) (x₂ :: xs) ≡⟨ reverse-by-acc-append-lemma (x₁ :: a :: acc) xs x₂ ⟩ 
-    reverse-by-acc [] xs ++ (x₂ :: x₁ :: a :: acc) ≡⟨⟩
-    reverse-by-acc [] xs ++ ((x₂ :: x₁ :: []) ++ (a :: acc)) ≡⟨ sym (++-assoc (reverse-by-acc [] xs) (x₂ :: x₁ :: []) (a :: acc))⟩ 
-    (reverse-by-acc [] xs ++ (x₂ :: x₁ :: [])) ++ (a :: acc) ≡⟨ cong (λ x → x ++ (a :: acc)) (sym(reverse-by-acc-append-lemma (x₁ :: []) xs x₂ )) ⟩
-    (reverse-by-acc (x₁ :: []) (x₂ :: xs)) ++ (a :: acc) ≡⟨⟩
-    (reverse-by-acc [] (x₁ :: x₂ :: xs)) ++ (a :: acc) ∎ </code></pre>
-<pre><code>length-concat-sum : {A : Set} → (a b : List A) → length (a ++ b) ≡ length a + length b 
-length-concat-sum [] b = refl 
-length-concat-sum (x :: xs) b = 
-    length (x :: xs ++ b) ≡⟨⟩ 
-    length (x :: (xs ++ b)) ≡⟨⟩
-    suc (length (xs ++ b)) ≡⟨ cong suc (length-concat-sum xs b) ⟩
-    suc (length xs + length b) ∎ </code></pre>
-<pre><code>+-suc : ∀ m n → (suc m + n) ≡ (m + suc n)
-+-suc zero m = refl
-+-suc (suc n) m = cong suc (+-suc n m)
-
-+-rightUnit : (n : ℕ) → (n + zero) ≡ n
-+-rightUnit zero = refl
-+-rightUnit (suc n) = cong suc (+-rightUnit n)
-
-+-comm : ∀ a b → a + b ≡ b + a
-+-comm zero b = sym(+-rightUnit b)
-+-comm (suc a) b = trans (cong suc (+-comm a b)) (+-suc b a)</code></pre>
-<pre><code>reverse-length-lemma : {A : Set} → (a : List A) → length (reverse a) ≡ length a
-reverse-length-lemma [] = refl
-reverse-length-lemma (x :: xs) = 
-  length (reverse (x :: xs)) ≡⟨ cong (length) (reverse-by-acc-append-lemma [] xs x) ⟩
-  length (reverse xs ++ (x :: [])) ≡⟨ length-concat-sum (reverse xs)  (x :: []) ⟩
-  length (reverse xs) + length (x :: []) ≡⟨ cong (λ a → a + length (x :: [])) (reverse-length-lemma xs) ⟩ 
-  length xs + length (x :: []) ≡⟨⟩ 
-  length xs + suc zero ≡⟨ sym (+-suc (length xs) (zero)) ⟩ 
-  suc(length xs) + 0 ≡⟨ +-comm ( suc(length xs)) 0 ⟩ 
-  suc(length xs) ∎</code></pre>
+<section id="полезные-функции" class="slide level2">
+<h2>Полезные функции</h2>
+<ul>
+<li><code>(f a) ≡⟨ cong f l ⟩ (f b)</code> - <code>cong</code>
+конгруэтность, если аргументы <code>f</code> равны по <code>l</code>,
+т.е. <code>a ≡⟨ l ⟩ b</code>, то
+<code>(f a) ≡⟨ cong f l ⟩ (f b)</code></li>
+<li><code>b ≡⟨ sym l ⟩ a</code> - <code>sym</code> симметричность, если
+<code>a ≡⟨ l ⟩ b</code>, то <code>b ≡⟨ sym l ⟩ a</code></li>
+</ul>
 </section></section>
+<section>
+<section id="добавление-в-конец" class="title-slide slide level1">
+<h1>Добавление в конец</h1>
+<p>Определим функцию добавления элемента в конец списка. Добавление
+<code>a</code> в конец пустого списка это список из состоящий из одного
+элемента <code>a</code>, а добавление в конец непустого списка это
+добавление в конец его хвоста.</p>
+<p>Обратите внимание, что операция добавления в конец имеет
+алгоритмическую сложность O(n), где n - длина списка.</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>append <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> A <span class="ot">→</span> List A </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>append [] a <span class="ot">=</span> a :: []</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>append <span class="ot">(</span>x :: xs<span class="ot">)</span> a <span class="ot">=</span> x :: <span class="ot">(</span>append xs a<span class="ot">)</span></span></code></pre></div>
+</section>
+<section id="длина-append" class="slide level2">
+<h2>Длина append</h2>
+<p>Докажем с помощью индукции, что длинна списка после применения
+<code>append</code> увеличивается на единицу</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>append-length-lemma <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>l <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> A<span class="ot">)</span> <span class="ot">→</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                      length <span class="ot">(</span>append l a<span class="ot">)</span> ≡ <span class="dv">1</span> + <span class="ot">(</span>length l<span class="ot">)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- База</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>append-length-lemma <span class="ot">{</span>A<span class="ot">}</span> [] a <span class="ot">=</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">(</span>append [] a<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">(</span>a :: []<span class="ot">)</span> ≡⟨⟩</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span> + <span class="ot">(</span>length <span class="ot">{</span>A<span class="ot">}</span> []<span class="ot">)</span> ∎ <span class="co">--необходимо явно указать тип т.к. [] может не быть типа List A</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- Шаг индукции</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>append-length-lemma <span class="ot">(</span>x :: xs<span class="ot">)</span> a <span class="ot">=</span> </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">(</span>append <span class="ot">(</span>x :: xs<span class="ot">)</span> a<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">(</span>x :: <span class="ot">(</span>append xs a<span class="ot">))</span> ≡⟨⟩ </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span> + <span class="ot">(</span>length <span class="ot">(</span>append xs a<span class="ot">))</span> ≡⟨ cong suc <span class="ot">(</span>append-length-lemma xs a<span class="ot">)</span> ⟩ </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Для (length (append xs a) лемма уже доказана, поэтому используем cong suc </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span> + <span class="ot">(</span><span class="dv">1</span> + <span class="ot">(</span>length xs<span class="ot">))</span> ∎ </span></code></pre></div>
+<p>Цепочку преобразований в которой есть <code>≡⟨⟩</code> можно заменить
+на <code>refl</code>, но для наглядности иногда удобнее не
+сокращать.</p>
+</section></section>
+<section>
+<section id="определение-конкатенации" class="title-slide slide level1">
+<h1>Определение конкатенации</h1>
+<p>Определим конкатенацию двух списков</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ot">_</span>++<span class="ot">_</span> <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> List A <span class="ot">→</span> List A </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>[] ++ ys <span class="ot">=</span> ys </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ot">(</span>x :: xs<span class="ot">)</span> ++ ys <span class="ot">=</span> x :: <span class="ot">(</span>xs ++ ys<span class="ot">)</span></span></code></pre></div>
+</section>
+<section id="правый-ноль" class="slide level2">
+<h2>Правый ноль</h2>
+<p>Покажем, что <code>[]</code> является правым нулем относительно
+конкатенации</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>[]-rightUnit <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> a ++ [] ≡ a </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>[]-rightUnit [] <span class="ot">=</span> refl</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>[]-rightUnit <span class="ot">(</span>x :: xs<span class="ot">)</span> <span class="ot">=</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">(</span>x :: xs<span class="ot">)</span> ++ [] ≡⟨⟩ </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  x :: <span class="ot">(</span>xs ++ []<span class="ot">)</span> ≡⟨ cong <span class="ot">(λ</span> l <span class="ot">→</span> x :: l<span class="ot">)</span> <span class="ot">(</span>[]-rightUnit xs<span class="ot">)</span> ⟩</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  x :: xs ∎</span></code></pre></div>
+</section>
+<section id="ассоциативность-конкатенации" class="slide level2">
+<h2>Ассоциативность конкатенации</h2>
+<p>Докажем ассоциативность конкатенации</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>++-assoc <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a b c <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> <span class="ot">(</span>a ++ b<span class="ot">)</span> ++ c ≡ a ++ <span class="ot">(</span>b ++ c<span class="ot">)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>++-assoc [] b c <span class="ot">=</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">(</span>[] ++ b<span class="ot">)</span> ++ c ≡⟨⟩ </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    b ++ c ≡⟨⟩ </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    [] ++ <span class="ot">(</span>b ++ c<span class="ot">)</span> ∎ </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>++-assoc <span class="ot">(</span>x :: a<span class="ot">)</span> b c <span class="ot">=</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">((</span>x :: a<span class="ot">)</span> ++ b<span class="ot">)</span> ++ c ≡⟨⟩ </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">(</span>x :: <span class="ot">(</span>a ++ b<span class="ot">))</span> ++ c ≡⟨⟩ </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    x :: <span class="ot">((</span>a ++ b<span class="ot">)</span> ++ c<span class="ot">)</span> ≡⟨ cong <span class="ot">(λ</span> y <span class="ot">→</span> <span class="ot">(</span>x :: y<span class="ot">))</span> <span class="ot">(</span>++-assoc a b c <span class="ot">)</span> ⟩ </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- для (a ++ b) ++ c ассоциативность доказана, поэтому используем cong </span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    x :: <span class="ot">(</span>a ++ <span class="ot">(</span>b ++ c<span class="ot">))</span> ≡⟨⟩ </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="ot">(</span>x :: a<span class="ot">)</span> ++ <span class="ot">(</span>b ++ c<span class="ot">)</span> ∎</span></code></pre></div>
+</section>
+<section id="длина-конкатенации" class="slide level2">
+<h2>Длина конкатенации</h2>
+<p>Докажем, что длина конкатенации двух строк равна сумме длин этих
+строк</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>length-concat-sum <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a b <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                    length <span class="ot">(</span>a ++ b<span class="ot">)</span> ≡ length a + length b </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>length-concat-sum <span class="ot">{</span>A<span class="ot">}</span> [] b <span class="ot">=</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">(</span>[] ++ b<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    length b ≡⟨⟩ </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span> + length b ≡⟨⟩</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">{</span>A<span class="ot">}</span> [] + length b ∎</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>length-concat-sum <span class="ot">(</span>x :: xs<span class="ot">)</span> b <span class="ot">=</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">(</span>x :: xs ++ b<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    length <span class="ot">(</span>x :: <span class="ot">(</span>xs ++ b<span class="ot">))</span> ≡⟨⟩</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    suc <span class="ot">(</span>length <span class="ot">(</span>xs ++ b<span class="ot">))</span> ≡⟨ cong suc <span class="ot">(</span>length-concat-sum xs b<span class="ot">)</span> ⟩</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    suc <span class="ot">(</span>length xs + length b<span class="ot">)</span> ∎ </span></code></pre></div>
+</section></section>
+<section id="определение-foldleft" class="title-slide slide level1">
+<h1>Определение foldLeft</h1>
+<p>Определим левую свертку</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>foldLeft <span class="ot">:</span> <span class="ot">{</span>A B <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> B <span class="ot">→</span> <span class="ot">(</span>B <span class="ot">→</span> A <span class="ot">→</span> B<span class="ot">)</span> <span class="ot">→</span> B</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>foldLeft [] b <span class="ot">_</span> <span class="ot">=</span> b</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>foldLeft <span class="ot">(</span>x :: xs<span class="ot">)</span> b f <span class="ot">=</span> foldLeft xs <span class="ot">(</span>f b x<span class="ot">)</span> f</span></code></pre></div>
+</section>
+
+<section>
+<section id="определения-reverse" class="title-slide slide level1">
+<h1>Определения reverse</h1>
+<p>Определим функцию <code>reverse</code>, т.к. существует несколько
+вариантов имплементации определим их все и сможем подоказывать их
+эквивалентность(с точки зрения возвращаемого результата)</p>
+</section>
+<section id="через-append" class="slide level2">
+<h2>Через append</h2>
+<p><code>reverse</code> можно определить, например, через
+<code>append</code></p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>reverse-by-append <span class="ot">:</span>  <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">-&gt;</span> List A <span class="ot">-&gt;</span> List A</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>reverse-by-append [] <span class="ot">=</span> []</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>reverse-by-append <span class="ot">(</span>x :: v<span class="ot">)</span> <span class="ot">=</span> append <span class="ot">(</span>reverse-by-append v<span class="ot">)</span> x</span></code></pre></div>
+<p>проблема этой реализации в сложности, которая будет O(n²)</p>
+</section>
+<section id="через-concat" class="slide level2">
+<h2>Через concat</h2>
+<p>Можно так же использовать <code>concat</code></p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>reverse-by-concat <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> List A </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>reverse-by-concat [] <span class="ot">=</span> []</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>reverse-by-concat <span class="ot">(</span>x :: xs<span class="ot">)</span> <span class="ot">=</span> <span class="ot">(</span>reverse-by-concat xs<span class="ot">)</span> ++ <span class="ot">(</span>x :: []<span class="ot">)</span></span></code></pre></div>
+<p>сложность этой реализации так же O(n²)</p>
+</section>
+<section id="через-аккумулятор" class="slide level2">
+<h2>Через аккумулятор</h2>
+<p>Более “хитрое” решение можно написать используя аккумулятор</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>reverse-by-acc <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> List A <span class="ot">→</span> List A </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>reverse-by-acc acc [] <span class="ot">=</span> acc </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>reverse-by-acc acc <span class="ot">(</span>x :: xs<span class="ot">)</span> <span class="ot">=</span> reverse-by-acc <span class="ot">(</span>x :: acc<span class="ot">)</span> xs</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>reverse <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> List A </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>reverse <span class="ot">=</span> reverse-by-acc []</span></code></pre></div>
+<p>сложность этой реализации уже O(n), эту реализацию и будем считать
+каноничной</p>
+</section>
+<section id="через-foldleft" class="slide level2">
+<h2>Через foldLeft</h2>
+<p>Аналогичная реализация, но аккумулятор мы перенесем в
+<code>foldLeft</code></p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>reverse-by-foldLeft <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> List A <span class="ot">→</span> List A </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>reverse-by-foldLeft l <span class="ot">=</span> foldLeft l [] <span class="ot">(λ</span> b a <span class="ot">→</span> a :: b<span class="ot">)</span></span></code></pre></div>
+<p>так же за O(n)</p>
+</section></section>
+<section>
+<section id="доказательство-эквивалентности-реализаций-reverse"
+class="title-slide slide level1">
+<h1>Доказательство эквивалентности реализаций <code>reverse</code></h1>
+<p>Рассмотрим несколько доказательств эквивалентности реализаций
+<code>reverse</code>(остальные можно подоказывать самостоятельно)</p>
+</section>
+<section id="через-foldleft-и-аккумулятор-в-аргументе"
+class="slide level2">
+<h2>Через foldLeft и аккумулятор в аргументе</h2>
+<p>Докажем эквивалентность <code>reverse</code> через
+<code>foldLeft</code> и через аккумулятор в аргументе. Для этого
+представим, что мы находимся в процессе выполнения
+<code>reverse</code>’а и аккумулятор уже не пуст</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>reverses-eq-1&#39; <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>acc <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                 reverse-by-acc acc a ≡ foldLeft a acc <span class="ot">(λ</span> b a <span class="ot">→</span> a :: b<span class="ot">)</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>reverses-eq-1&#39; <span class="ot">_</span> [] <span class="ot">=</span> refl</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>reverses-eq-1&#39; acc <span class="ot">(</span>y :: ys<span class="ot">)</span> <span class="ot">=</span> </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc  acc <span class="ot">(</span>y :: ys<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc  <span class="ot">(</span>y :: acc<span class="ot">)</span> ys ≡⟨ reverses-eq-1&#39; <span class="ot">(</span>y :: acc<span class="ot">)</span> ys ⟩ </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    foldLeft ys <span class="ot">(</span>y :: acc<span class="ot">)</span> <span class="ot">(λ</span> b a <span class="ot">→</span> a :: b<span class="ot">)</span> ∎</span></code></pre></div>
+</section>
+<section id="через-foldleft-и-аккумулятор-в-аргументе-но-честно"
+class="slide level2">
+<h2>Через foldLeft и аккумулятор в аргументе, но “честно”</h2>
+<p>Предыдущее доказетельство не совсем честное т.к. доказывает
+эквивалентность на определенном шаге рекурсии, чтобы сделать его
+“честным” просто подставим вместо аккумулятора пустой список</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>reverses-eq-1 <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                reverse-by-acc [] a ≡ reverse-by-foldLeft a</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>reverses-eq-1 <span class="ot">=</span> reverses-eq-1&#39; []</span></code></pre></div>
+</section>
+<section id="через-acc-и-лемма" class="slide level2">
+<h2>Через acc и ++ (лемма)</h2>
+<p>Для доказательства сначала представим, что мы уже находимся на
+каком-то шаге рекурсии и аккумулятор не пуст, и покажем, что элемент в
+начале списка переносится в конец</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>reverses-eq-2&#39; <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>acc <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> <span class="ot">(</span>l <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> A<span class="ot">)</span> <span class="ot">→</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                 reverse-by-acc acc <span class="ot">(</span>a :: l<span class="ot">)</span> ≡ reverse-by-acc [] l ++ <span class="ot">(</span>a :: acc<span class="ot">)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>reverses-eq-2&#39; <span class="ot">_</span> [] <span class="ot">_</span> <span class="ot">=</span> refl</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>reverses-eq-2&#39; acc <span class="ot">(</span>x :: []<span class="ot">)</span> a <span class="ot">=</span> refl</span></code></pre></div>
+</section>
+<section id="через-acc-и-лемма-1" class="slide level2">
+<h2>Через acc и ++ (лемма)</h2>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>reverses-eq-2&#39; acc <span class="ot">(</span>x₁ :: x₂ :: xs<span class="ot">)</span> a <span class="ot">=</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc acc <span class="ot">(</span>a :: x₁ :: x₂ :: xs<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc <span class="ot">(</span>a :: acc<span class="ot">)</span> <span class="ot">(</span>x₁ :: x₂ :: xs<span class="ot">)</span> ≡⟨⟩</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc <span class="ot">(</span>x₁ :: a :: acc<span class="ot">)</span> <span class="ot">(</span>x₂ :: xs<span class="ot">)</span> ≡⟨⟩</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc <span class="ot">(</span>x₁ :: a :: acc<span class="ot">)</span> <span class="ot">(</span>x₂ :: xs<span class="ot">)</span> ≡⟨ reverses-eq-2&#39; <span class="ot">(</span>x₁ :: a :: acc<span class="ot">)</span> xs x₂ ⟩ </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc [] xs ++ <span class="ot">(</span>x₂ :: x₁ :: a :: acc<span class="ot">)</span> ≡⟨⟩</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc [] xs ++ <span class="ot">((</span>x₂ :: x₁ :: []<span class="ot">)</span> ++ <span class="ot">(</span>a :: acc<span class="ot">))</span> </span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>      ≡⟨ sym <span class="ot">(</span>++-assoc <span class="ot">(</span>reverse-by-acc [] xs<span class="ot">)</span> <span class="ot">(</span>x₂ :: x₁ :: []<span class="ot">)</span> <span class="ot">(</span>a :: acc<span class="ot">))</span>⟩ </span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="ot">(</span>reverse-by-acc [] xs ++ <span class="ot">(</span>x₂ :: x₁ :: []<span class="ot">))</span> ++ <span class="ot">(</span>a :: acc<span class="ot">)</span> </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>      ≡⟨ cong <span class="ot">(λ</span> x <span class="ot">→</span> x ++ <span class="ot">(</span>a :: acc<span class="ot">))</span> <span class="ot">(</span>sym<span class="ot">(</span>reverses-eq-2&#39; <span class="ot">(</span>x₁ :: []<span class="ot">)</span> xs x₂ <span class="ot">))</span> ⟩</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="ot">(</span>reverse-by-acc <span class="ot">(</span>x₁ :: []<span class="ot">)</span> <span class="ot">(</span>x₂ :: xs<span class="ot">))</span> ++ <span class="ot">(</span>a :: acc<span class="ot">)</span> ≡⟨⟩</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="ot">(</span>reverse-by-acc [] <span class="ot">(</span>x₁ :: x₂ :: xs<span class="ot">))</span> ++ <span class="ot">(</span>a :: acc<span class="ot">)</span> ∎ </span></code></pre></div>
+</section>
+<section id="через-acc-и" class="slide level2">
+<h2>Через acc и ++</h2>
+<p>Теперь можем подставить вместо аккумулятора пустой список и завершить
+доказательство</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>reverses-eq-2 <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>l <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                reverse-by-acc [] l ≡ reverse-by-concat l</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>reverses-eq-2 [] <span class="ot">=</span> refl</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>reverses-eq-2 <span class="ot">(</span>x :: xs<span class="ot">)</span> <span class="ot">=</span> </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc [] <span class="ot">(</span>x :: xs<span class="ot">)</span> ≡⟨ reverses-eq-2&#39; [] xs x ⟩</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    reverse-by-acc [] xs ++ <span class="ot">(</span>x :: []<span class="ot">)</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>      ≡⟨ cong <span class="ot">(λ</span> l <span class="ot">→</span> l ++ <span class="ot">(</span>x :: []<span class="ot">))</span> <span class="ot">(</span>reverses-eq-2 xs<span class="ot">)</span> ⟩</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    reverse-by-concat xs ++ <span class="ot">(</span>x :: []<span class="ot">)</span> ∎</span></code></pre></div>
+</section></section>
+<section id="длина-reverse" class="title-slide slide level1">
+<h1>Длина reverse</h1>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>reverse-length <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> length <span class="ot">(</span>reverse a<span class="ot">)</span> ≡ length a</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>reverse-length [] <span class="ot">=</span> refl</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>reverse-length <span class="ot">(</span>x :: xs<span class="ot">)</span> <span class="ot">=</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  length <span class="ot">(</span>reverse <span class="ot">(</span>x :: xs<span class="ot">))</span>  ≡⟨ cong length <span class="ot">(</span>reverses-eq-2&#39; [] xs x<span class="ot">)</span> ⟩</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  length <span class="ot">(</span>reverse xs ++ <span class="ot">(</span>x :: []<span class="ot">))</span> ≡⟨ length-concat-sum <span class="ot">(</span>reverse xs<span class="ot">)</span> <span class="ot">(</span>x :: []<span class="ot">)</span> ⟩</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  length <span class="ot">(</span>reverse xs<span class="ot">)</span> + length <span class="ot">(</span>x :: []<span class="ot">)</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    ≡⟨ cong <span class="ot">(λ</span> a <span class="ot">→</span> a + length <span class="ot">(</span>x :: []<span class="ot">))</span> <span class="ot">(</span>reverse-length xs<span class="ot">)</span> ⟩ </span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  length xs + length <span class="ot">(</span>x :: []<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  length xs + <span class="dv">1</span> ≡⟨ +-suc <span class="ot">(</span>length xs<span class="ot">)</span> <span class="dv">0</span> ⟩ </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> + <span class="ot">(</span>length xs<span class="ot">)</span> + <span class="dv">0</span> ≡⟨ +-comm <span class="ot">(</span> <span class="dv">1</span> + <span class="ot">(</span>length xs<span class="ot">))</span> <span class="dv">0</span> ⟩ </span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> + <span class="ot">(</span>length xs<span class="ot">)</span> ∎</span></code></pre></div>
+</section>
+
+<section>
+<section id="reverse-инвертирует-конкатенацию"
+class="title-slide slide level1">
+<h1><code>reverse</code> инвертирует конкатенацию</h1>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>reverse-inversion <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a b <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                    reverse <span class="ot">(</span>a ++ b<span class="ot">)</span> ≡ reverse b ++ reverse a</span></code></pre></div>
+</section>
+<section id="база" class="slide level2">
+<h2>База</h2>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>reverse-inversion [] b <span class="ot">=</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  reverse b ≡⟨ sym <span class="ot">(</span>[]-rightUnit <span class="ot">(</span>reverse b<span class="ot">))</span> ⟩ </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  reverse b ++ [] ≡⟨⟩ </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  reverse b ++ reverse-by-concat [] </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    ≡⟨ cong <span class="ot">(λ</span> x <span class="ot">→</span> reverse b ++ x<span class="ot">)</span> <span class="ot">(</span>sym<span class="ot">(</span>reverses-eq-2 []<span class="ot">))</span>⟩</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  reverse b ++ reverse [] ∎</span></code></pre></div>
+</section>
+<section id="шаг" class="slide level2">
+<h2>Шаг</h2>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>reverse-inversion <span class="ot">(</span>x :: xs<span class="ot">)</span> b <span class="ot">=</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  reverse <span class="ot">((</span>x :: xs<span class="ot">)</span> ++ b<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  reverse <span class="ot">(</span>x :: <span class="ot">(</span>xs ++ b<span class="ot">))</span>  ≡⟨ reverses-eq-2&#39; [] <span class="ot">(</span>xs ++ b<span class="ot">)</span> x ⟩ </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  reverse <span class="ot">(</span>xs ++ b<span class="ot">)</span> ++ <span class="ot">(</span>x :: []<span class="ot">)</span> </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    ≡⟨ cong <span class="ot">(λ</span> l <span class="ot">→</span> l ++ <span class="ot">(</span>x :: []<span class="ot">))</span> <span class="ot">(</span>reverse-inversion xs b<span class="ot">)</span> ⟩ </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">(</span>reverse b ++ reverse xs<span class="ot">)</span> ++ <span class="ot">(</span>x :: []<span class="ot">)</span> </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    ≡⟨ ++-assoc <span class="ot">(</span>reverse b<span class="ot">)</span> <span class="ot">(</span>reverse xs<span class="ot">)</span> <span class="ot">(</span>x :: []<span class="ot">)</span> ⟩ </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  reverse b ++ <span class="ot">(</span>reverse xs ++ <span class="ot">(</span>x :: []<span class="ot">))</span> </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    ≡⟨ cong <span class="ot">(λ</span> l <span class="ot">→</span> reverse b ++ l<span class="ot">)(</span>sym <span class="ot">(</span>reverses-eq-2&#39; [] xs x<span class="ot">))</span> ⟩</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  reverse b ++ reverse <span class="ot">(</span>x :: xs<span class="ot">)</span> ∎</span></code></pre></div>
+</section></section>
+<section id="инволюция-reverse" class="title-slide slide level1">
+<h1>Инволюция <code>reverse</code></h1>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode agda"><code class="sourceCode agda"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>reverse-involution <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>a <span class="ot">:</span> List A<span class="ot">)</span> <span class="ot">→</span> reverse <span class="ot">(</span>reverse a<span class="ot">)</span> ≡ a</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>reverse-involution [] <span class="ot">=</span> refl</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>reverse-involution <span class="ot">(</span>x :: xs<span class="ot">)</span> <span class="ot">=</span> </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  reverse <span class="ot">(</span>reverse <span class="ot">(</span>x :: xs<span class="ot">))</span> ≡⟨ cong reverse <span class="ot">(</span>reverses-eq-2&#39; [] xs x<span class="ot">)</span> ⟩</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  reverse <span class="ot">(</span>reverse xs ++ <span class="ot">(</span>x :: []<span class="ot">))</span> ≡⟨⟩ </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  reverse <span class="ot">(</span>reverse xs ++ <span class="ot">(</span>x :: []<span class="ot">))</span>  ≡⟨ reverse-inversion <span class="ot">(</span>reverse xs<span class="ot">)</span> <span class="ot">(</span>x :: []<span class="ot">)</span> ⟩</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  reverse <span class="ot">(</span>x :: []<span class="ot">)</span> ++ reverse <span class="ot">(</span>reverse xs<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">(</span>x :: []<span class="ot">)</span> ++ reverse <span class="ot">(</span>reverse xs<span class="ot">)</span> </span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    ≡⟨ cong <span class="ot">(λ</span> l <span class="ot">→</span> <span class="ot">(</span>x :: []<span class="ot">)</span> ++ l<span class="ot">)</span> <span class="ot">(</span>reverse-involution xs<span class="ot">)</span> ⟩ </span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="ot">(</span>x :: []<span class="ot">)</span> ++ xs ≡⟨⟩</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  x :: <span class="ot">(</span>[] ++ xs<span class="ot">)</span> ≡⟨⟩ </span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  x :: xs ∎</span></code></pre></div>
+</section>
     </div>
   </div>
 
