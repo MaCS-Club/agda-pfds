@@ -108,13 +108,18 @@ sorted-ex3 = s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n))))) :: (s≤s (s≤
 
 # Фильтр 
 
+Для определения фильтра на списках нам потребуется передать предикат (тип `Pred`), который может быть разрешен за конечное время (`Decidable P`)
+
 ```agda 
 filter : ∀ {l} {A : Set} {P : Pred A l} → Decidable P → List A → List A 
 filter P? [] = []
 filter P? (x :: xs) with does (P? x)
 ... | false = filter P? xs
 ... | true  = x :: filter P? xs
+```
 
+
+```
 filter-ex0 = filter (_<? 5) (1 :: 3 :: 5 :: 7 :: []) 
 ```
 
